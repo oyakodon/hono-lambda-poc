@@ -1,0 +1,27 @@
+# Dependencies (will be installed in container)
+node_modules/
+
+# Git
+.git/
+.gitignore
+
+# IaC files
+.aws/
+
+# Documentation
+*.md
+
+# Environment files
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts (built inside Docker)
+dist/

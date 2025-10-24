@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(100% 0 0);
+  --color-foreground: oklch(14.89% 0.004 285.75);
+
+  --color-card: oklch(100% 0 0);
+  --color-card-foreground: oklch(14.89% 0.004 285.75);
+
+  --color-popover: oklch(100% 0 0);
+  --color-popover-foreground: oklch(14.89% 0.004 285.75);
+
+  --color-primary: oklch(58.42% 0.199 257.87);
+  --color-primary-foreground: oklch(98.04% 0 0);
+
+  --color-secondary: oklch(96.21% 0.002 264.54);
+  --color-secondary-foreground: oklch(24.79% 0.015 285.88);
+
+  --color-muted: oklch(96.21% 0.002 264.54);
+  --color-muted-foreground: oklch(58.27% 0.016 256.02);
+
+  --color-accent: oklch(96.21% 0.002 264.54);
+  --color-accent-foreground: oklch(24.79% 0.015 285.88);
+
+  --color-destructive: oklch(62.8% 0.228 29.23);
+  --color-destructive-foreground: oklch(98.04% 0 0);
+
+  --color-border: oklch(91.55% 0.008 264.4);
+  --color-input: oklch(91.55% 0.008 264.4);
+  --color-ring: oklch(58.42% 0.199 257.87);
+
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    max-width: 56rem;
+    margin: 2.5rem auto;
+    padding: 0 1.25rem;
+    line-height: 1.625;
+  }
+}
