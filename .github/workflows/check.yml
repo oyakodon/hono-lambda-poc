@@ -53,55 +53,6 @@ jobs:
       - name: Run TypeScript type check
         run: npx tsc --noEmit
 
-  build:
-    name: Build Verification
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build client
-        run: npx vite build --mode client
-
-      - name: Build server
-        run: npx vite build
-
-      - name: Verify build artifacts
-        run: |
-          echo "Checking build artifacts..."
-          ls -lah dist/
-
-          # Verify client artifacts
-          if [ ! -f "dist/static/client.js" ]; then
-            echo "Error: Client build artifact not found"
-            exit 1
-          fi
-
-          # Verify server artifacts
-          if [ ! -f "dist/index.js" ]; then
-            echo "Error: Server build artifact not found"
-            exit 1
-          fi
-
-          echo "All build artifacts verified successfully!"
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: dist/
-          retention-days: 7
-
   docker-build:
     name: Docker Build Verification
     runs-on: ubuntu-latest
@@ -148,7 +99,7 @@ jobs:
   check-success:
     name: All Checks Passed
     runs-on: ubuntu-latest
-    needs: [lint-and-format, type-check, build, docker-build]
+    needs: [lint-and-format, type-check, docker-build]
     if: always()
 
     steps:
@@ -156,7 +107,6 @@ jobs:
         run: |
           if [ "${{ needs.lint-and-format.result }}" != "success" ] || \
              [ "${{ needs.type-check.result }}" != "success" ] || \
-             [ "${{ needs.build.result }}" != "success" ] || \
              [ "${{ needs.docker-build.result }}" != "success" ]; then
             echo "One or more checks failed"
             exit 1

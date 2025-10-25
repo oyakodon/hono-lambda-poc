@@ -12,13 +12,10 @@
   - Biome lint
   - Biome format check
   - TypeScript型チェック (`tsc --noEmit`)
-- [x] ビルド検証の追加
-  - クライアントビルド (`vite build --mode client`)
-  - サーバービルド (`vite build`)
-  - ビルド成果物の検証
-- [x] Dockerイメージビルド検証の追加
+- [x] Dockerビルド検証（vite buildを含む）
   - ARM64プラットフォームでのビルドテスト
   - イメージサイズの確認
+  - 注: 本番はDocker経由のデプロイのみ、ローカルはvite devを使用するため、check段階ではDocker buildのみで検証
 
 ### CD - ECRプッシュ (push-ecr.yml)
 - [x] AWS ECRへのDockerイメージpush自動化
