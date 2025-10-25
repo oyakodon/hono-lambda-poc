@@ -16,8 +16,6 @@ jobs:
   push-ecr:
     name: Build and Push to ECR
     runs-on: ubuntu-latest
-    # Uncomment when check.yml workflow is tested
-    # needs: check
 
     steps:
       - name: Checkout code
