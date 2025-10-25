@@ -14,8 +14,8 @@ on:
 
 env:
   AWS_REGION: ap-northeast-1
-  ECR_REPOSITORY: hono-lambda-poc
-  LAMBDA_FUNCTION_NAME: hono-lambda-poc
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+  LAMBDA_FUNCTION_NAME: ${{ vars.LAMBDA_FUNCTION_NAME }}
 
 jobs:
   deploy:
