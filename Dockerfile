@@ -9,7 +9,6 @@ RUN npm ci
 
 # Copy source files and configs
 COPY src/ ${LAMBDA_TASK_ROOT}/src/
-COPY public/ ${LAMBDA_TASK_ROOT}/public/
 COPY vite.config.ts tsconfig.json tailwind.config.js postcss.config.js components.json ${LAMBDA_TASK_ROOT}/
 
 # Build client and server
