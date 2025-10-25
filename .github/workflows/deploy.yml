@@ -61,29 +61,5 @@ jobs:
 
       - name: Wait for Lambda update to complete
         run: |
-          echo "Waiting for Lambda function to be updated..."
           aws lambda wait function-updated \
             --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
-
-      - name: Get function configuration
-        run: |
-          aws lambda get-function-configuration \
-            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
-            --query '[FunctionName,State,LastUpdateStatus,Runtime,CodeSize]' \
-            --output table
-
-      - name: Deployment notification
-        run: |
-          echo "Deployment completed successfully!"
-          echo "Function: ${{ env.LAMBDA_FUNCTION_NAME }}"
-          echo "Image: ${{ steps.image.outputs.uri }}"
-          echo "Region: ${{ env.AWS_REGION }}"
-
-      # Optional: Health check
-      - name: Health check (optional)
-        if: false  # Enable this when Lambda function URL or API Gateway is set up
-        run: |
-          # Example: curl your Lambda function URL or API Gateway endpoint
-          # FUNCTION_URL=$(aws lambda get-function-url-config --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'FunctionUrl' --output text)
-          # curl -f ${FUNCTION_URL}/api/hello
-          echo "Health check skipped - configure your endpoint first"
