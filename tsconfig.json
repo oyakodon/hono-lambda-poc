@@ -11,7 +11,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "types": ["@types/aws-lambda", "vite/client"],
+    "types": ["@types/aws-lambda", "vite/client", "vitest/globals"],
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "baseUrl": ".",
