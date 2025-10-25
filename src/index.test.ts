@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import app from './index'
 
 describe('API Endpoints', () => {
@@ -31,7 +31,7 @@ describe('API Endpoints', () => {
       const res = await app.request('/api/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'test', value: 123 }),
+        body: JSON.stringify({ name: 'test', value: 123 })
       })
 
       expect(res.status).toBe(200)
@@ -43,7 +43,7 @@ describe('API Endpoints', () => {
       const res = await app.request('/api/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(testData),
+        body: JSON.stringify(testData)
       })
 
       const json = await res.json()
@@ -56,7 +56,7 @@ describe('API Endpoints', () => {
       const res = await app.request('/api/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: 'invalid json string',
+        body: 'invalid json string'
       })
 
       expect(res.status).toBe(400)
@@ -66,7 +66,7 @@ describe('API Endpoints', () => {
       const res = await app.request('/api/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: 'invalid json',
+        body: 'invalid json'
       })
 
       const json = await res.json()
