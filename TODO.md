@@ -1,10 +1,13 @@
 # CI/CD構築のためのTodoリスト
 
 ## ✅ 完了
+
+### ワークフロー構成
+- [x] ワークフローを3つに分割 (`check.yml`, `push-ecr.yml`, `deploy.yml`)
+- [x] GitHub Actions v6 へ最新化
+
+### CI (継続的インテグレーション) - check.yml
 - [x] プロジェクト構造とビルドプロセスの理解
-- [x] CI用GitHub Actionsワークフローの設計・作成
-  - Pull Request時のコード検証
-  - mainブランチへのpush時の検証
 - [x] コード品質チェックの設定
   - Biome lint
   - Biome format check
@@ -17,29 +20,29 @@
   - ARM64プラットフォームでのビルドテスト
   - イメージサイズの確認
 
-## 📋 CI (継続的インテグレーション) タスク
-
-## 🚀 CD (継続的デリバリー) タスク
-
-- [ ] CD用GitHub Actionsワークフローの設計・作成
-  - タグpush時の自動デプロイ
-  - または mainブランチへのマージ時のデプロイ
-
-- [ ] AWS ECRへのDockerイメージpush自動化
+### CD - ECRプッシュ (push-ecr.yml)
+- [x] AWS ECRへのDockerイメージpush自動化
   - AWS認証の設定
   - ECRリポジトリへのpush
-  - イメージタグ管理（semantic versioning等）
+  - イメージタグ管理（タグ/SHA/latest）
+  - 手動実行（workflow_dispatch）対応
 
-- [ ] AWS Lambdaへのデプロイ自動化の実装
+### CD - デプロイ (deploy.yml)
+- [x] AWS Lambdaへのデプロイ自動化の実装
   - Lambda関数の更新
-  - API Gatewayの設定（必要に応じて）
-  - デプロイ後の疎通確認
+  - ECRプッシュ成功後の自動デプロイ
+  - 手動デプロイ対応
+  - デプロイ状態の確認
 
-## 🔧 設定・運用タスク
+## 📋 残タスク
 
+### 設定・運用
 - [ ] 環境変数とシークレット管理の設定
   - GitHub Secrets の設定（AWS認証情報等）
-  - 環境別の設定管理（dev/staging/prod）
+    - `AWS_ACCESS_KEY_ID`
+    - `AWS_SECRET_ACCESS_KEY`
+  - ECRリポジトリ名の確認・設定
+  - Lambda関数名の確認・設定
 
 - [ ] ワークフローのテストとドキュメント更新
   - ワークフローの動作確認

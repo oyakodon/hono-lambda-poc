@@ -1,0 +1,89 @@
+name: Deploy to Lambda
+
+on:
+  workflow_run:
+    workflows: ["Push to ECR"]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'ECR image tag to deploy (e.g., v1.0.0, latest)'
+        required: false
+        default: 'latest'
+
+env:
+  AWS_REGION: ap-northeast-1
+  LAMBDA_FUNCTION_NAME: hono-lambda-poc
+
+jobs:
+  deploy:
+    name: Deploy to AWS Lambda
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Get image URI
+        id: image
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TAG="${{ github.event.inputs.image_tag }}"
+          else
+            TAG="latest"
+          fi
+
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY=hono-lambda-poc
+          IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${TAG}"
+
+          echo "uri=${IMAGE_URI}" >> $GITHUB_OUTPUT
+          echo "Deploying image: ${IMAGE_URI}"
+
+      - name: Update Lambda function
+        run: |
+          aws lambda update-function-code \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --image-uri ${{ steps.image.outputs.uri }}
+
+      - name: Wait for Lambda update to complete
+        run: |
+          echo "Waiting for Lambda function to be updated..."
+          aws lambda wait function-updated \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
+
+      - name: Get function configuration
+        run: |
+          aws lambda get-function-configuration \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --query '[FunctionName,State,LastUpdateStatus,Runtime,CodeSize]' \
+            --output table
+
+      - name: Deployment notification
+        run: |
+          echo "Deployment completed successfully!"
+          echo "Function: ${{ env.LAMBDA_FUNCTION_NAME }}"
+          echo "Image: ${{ steps.image.outputs.uri }}"
+          echo "Region: ${{ env.AWS_REGION }}"
+
+      # Optional: Health check
+      - name: Health check (optional)
+        if: false  # Enable this when Lambda function URL or API Gateway is set up
+        run: |
+          # Example: curl your Lambda function URL or API Gateway endpoint
+          # FUNCTION_URL=$(aws lambda get-function-url-config --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'FunctionUrl' --output text)
+          # curl -f ${FUNCTION_URL}/api/hello
+          echo "Health check skipped - configure your endpoint first"
