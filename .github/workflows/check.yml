@@ -9,6 +9,9 @@ on:
     branches:
       - main
 
+env:
+  NODE_VERSION: '20'
+
 jobs:
   lint-and-format:
     name: Lint & Format Check
@@ -21,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
@@ -44,7 +47,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
@@ -73,28 +76,6 @@ jobs:
           tags: hono-lambda-poc:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Build and export Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/arm64
-          push: false
-          tags: hono-lambda-poc:test
-          outputs: type=docker,dest=/tmp/image.tar
-
-      - name: Check image size
-        run: |
-          echo "Docker image size:"
-          ls -lh /tmp/image.tar
-
-          IMAGE_SIZE_MB=$(du -m /tmp/image.tar | cut -f1)
-          echo "Image size: ${IMAGE_SIZE_MB}MB"
-
-          # Warning if image is larger than 500MB
-          if [ "$IMAGE_SIZE_MB" -gt 500 ]; then
-            echo "Warning: Docker image is larger than 500MB"
-          fi
 
   check-success:
     name: All Checks Passed
