@@ -11,7 +11,14 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link']
+      options: [
+        'default',
+        'destructive',
+        'outline',
+        'secondary',
+        'ghost',
+        'link'
+      ]
     },
     size: {
       control: 'select',
@@ -101,22 +108,22 @@ export const Disabled: Story = {
 
 export const AllVariants: Story = {
   render: () => (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap gap-4">
-        <Button variant="default">Default</Button>
-        <Button variant="destructive">Destructive</Button>
-        <Button variant="outline">Outline</Button>
-        <Button variant="secondary">Secondary</Button>
-        <Button variant="ghost">Ghost</Button>
-        <Button variant="link">Link</Button>
+    <div className='flex flex-col gap-4'>
+      <div className='flex flex-wrap gap-4'>
+        <Button variant='default'>Default</Button>
+        <Button variant='destructive'>Destructive</Button>
+        <Button variant='outline'>Outline</Button>
+        <Button variant='secondary'>Secondary</Button>
+        <Button variant='ghost'>Ghost</Button>
+        <Button variant='link'>Link</Button>
       </div>
-      <div className="flex flex-wrap gap-4">
-        <Button size="sm">Small</Button>
-        <Button size="default">Default</Button>
-        <Button size="lg">Large</Button>
-        <Button size="icon">🚀</Button>
+      <div className='flex flex-wrap gap-4'>
+        <Button size='sm'>Small</Button>
+        <Button size='default'>Default</Button>
+        <Button size='lg'>Large</Button>
+        <Button size='icon'>🚀</Button>
       </div>
-      <div className="flex flex-wrap gap-4">
+      <div className='flex flex-wrap gap-4'>
         <Button disabled>Disabled</Button>
       </div>
     </div>

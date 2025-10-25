@@ -1,5 +1,4 @@
 import type { Preview } from '@storybook/react'
-import React from 'react'
 import '../src/client/index.css'
 
 const preview: Preview = {
@@ -13,7 +12,7 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <div className="antialiased">
+      <div className='antialiased'>
         <Story />
       </div>
     )

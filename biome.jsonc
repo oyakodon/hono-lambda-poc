@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": ["storybook-static"]
+    "includes": ["**", "!storybook-static"]
   },
   "vcs": {
     "enabled": false,
