@@ -15,6 +15,7 @@
   - Lambda関数（ARM64、コンテナイメージ）
   - API Gateway HTTP API
   - Lambda Execution Role
+  - CloudWatch Logs ロググループ（保持期間設定可能）
 
 ### インフラ構成図
 
@@ -67,8 +68,14 @@ aws cloudformation create-stack \
   --template-body file://cfn-service.yml \
   --parameters \
     ParameterKey=ImageUri,ParameterValue=<ECR_IMAGE_URI> \
+    ParameterKey=LogRetentionInDays,ParameterValue=14 \
   --capabilities CAPABILITY_NAMED_IAM
 ```
+
+**パラメータ:**
+- `ImageUri` (必須): ECRイメージのURI
+- `StageName` (オプション): API Gatewayのステージ名 (デフォルト: prod)
+- `LogRetentionInDays` (オプション): CloudWatch Logsの保持期間（日数）(デフォルト: 14)
 
 ## 注意事項
 
@@ -76,3 +83,4 @@ aws cloudformation create-stack \
 - タイムアウト: 30秒
 - メモリ: 512MB
 - ECRライフサイクルポリシーにより、最新5イメージのみ保持されます
+- CloudWatch Logsの保持期間はデフォルトで14日間です（カスタマイズ可能）
