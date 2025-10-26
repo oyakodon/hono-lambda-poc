@@ -8,7 +8,6 @@ const app = new Hono()
 
 // AWS環境ではSTAGE環境変数からベースパスを設定、ローカル開発では設定しない
 const stage = process.env.STAGE
-const handler = stage ? handle(app.basePath(`/${stage}`)) : handle(app)
 
 // Request logging middleware
 app.use('*', async (c, next) => {
@@ -120,6 +119,8 @@ app.get('*', (c) => {
 })
 
 // Export Lambda handler for production (with base path if STAGE is set)
+// Handler is defined after all routes and middleware to ensure complete app state
+const handler = stage ? handle(app.basePath(`/${stage}`)) : handle(app)
 export { handler }
 
 // Export app for development server

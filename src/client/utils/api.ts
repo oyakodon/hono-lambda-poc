@@ -8,9 +8,15 @@ export function getBasePath(): string {
     return ''
   }
 
-  const pathname = new URL(baseElement.href).pathname
-  // Remove trailing slash: /prod/ -> /prod
-  return pathname.replace(/\/$/, '')
+  try {
+    const pathname = new URL(baseElement.href).pathname
+    // Remove trailing slash: /prod/ -> /prod
+    return pathname.replace(/\/$/, '')
+  } catch (error) {
+    // If URL parsing fails, return empty string
+    console.warn('Failed to parse base URL:', error)
+    return ''
+  }
 }
 
 /**
