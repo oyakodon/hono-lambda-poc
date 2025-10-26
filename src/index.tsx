@@ -64,6 +64,7 @@ app.post('/api/post', async (c) => {
 
     // 追加のログ情報（リクエストボディやヘッダー）
     log.info('POST request body', {
+      requestId: c.get('requestId'),
       body,
       headers: {
         contentType: c.req.header('content-type'),
