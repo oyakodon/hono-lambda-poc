@@ -79,6 +79,7 @@ app.post('/api/post', async (c) => {
     })
   } catch (error) {
     log.error('Failed to parse JSON body', error as Error, {
+      requestId: c.get('requestId'),
       path: c.req.path
     })
 
