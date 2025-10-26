@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { getApiUrl } from '../utils/api'
 import { Button } from '../components/ui/button'
+import { getApiUrl } from '../utils/api'
 
 export default function ApiDemo() {
   const [name, setName] = useState('')
