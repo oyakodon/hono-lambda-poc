@@ -96,6 +96,7 @@ app.get('*', (c) => {
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
+        {pathPrefix && <base href={`${pathPrefix}/`} />}
         <title>Hono + React on AWS Lambda</title>
         {import.meta.env.PROD && (
           <link rel='stylesheet' href={`${pathPrefix}/static/main.css`} />

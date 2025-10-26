@@ -43,8 +43,14 @@ const routes = Object.keys(pages)
   .filter(Boolean)
 
 export default function App() {
+  // <base> タグからベースURLを取得（ステージ名対応）
+  const baseElement = document.querySelector('base')
+  const basename = baseElement
+    ? new URL(baseElement.href).pathname.replace(/\/$/, '')
+    : undefined
+
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Routes>
         <Route element={<Layout />}>
           {routes.map(
