@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
+import { getBasePath } from './utils/api'
 
 // Dynamically import all page components
 const pages = import.meta.glob('./pages/*.tsx')
@@ -43,8 +44,12 @@ const routes = Object.keys(pages)
   .filter(Boolean)
 
 export default function App() {
+  // <base> タグからベースパスを取得（ステージ名対応）
+  // getBasePath()を再利用して単一の実装を維持
+  const basename = getBasePath() || undefined
+
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Routes>
         <Route element={<Layout />}>
           {routes.map(

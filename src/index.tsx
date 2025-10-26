@@ -6,6 +6,9 @@ import { log } from './lib/logger'
 
 const app = new Hono()
 
+// AWS環境ではSTAGE環境変数からベースパスを設定、ローカル開発では設定しない
+const stage = process.env.STAGE
+
 // Request logging middleware
 app.use('*', async (c, next) => {
   const start = Date.now()
@@ -84,20 +87,24 @@ app.post('/api/post', async (c) => {
 
 // SSR for all other routes
 app.get('*', (c) => {
+  // AWS環境ではステージ名をパスのプレフィックスに含める
+  const pathPrefix = stage ? `/${stage}` : ''
+
   const html = renderToString(
     <html lang='en'>
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
+        {pathPrefix && <base href={`${pathPrefix}/`} />}
         <title>Hono + React on AWS Lambda</title>
         {import.meta.env.PROD && (
-          <link rel='stylesheet' href='/static/main.css' />
+          <link rel='stylesheet' href={`${pathPrefix}/static/main.css`} />
         )}
         <script
           type='module'
           src={
             import.meta.env.PROD
-              ? '/static/client.js' // Production: bundled client
+              ? `${pathPrefix}/static/client.js` // Production: bundled client
               : '/src/client/main.tsx' // Development: source file with HMR
           }
         ></script>
@@ -111,8 +118,10 @@ app.get('*', (c) => {
   return c.html(html)
 })
 
-// Export Lambda handler for production
-export const handler = handle(app)
+// Export Lambda handler for production (with base path if STAGE is set)
+// Handler is defined after all routes and middleware to ensure complete app state
+const handler = stage ? handle(app.basePath(`/${stage}`)) : handle(app)
+export { handler }
 
 // Export app for development server
 export default app

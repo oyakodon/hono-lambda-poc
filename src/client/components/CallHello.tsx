@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { getApiUrl } from '../utils/api'
 import { Button } from './ui/button'
 
 export default function CallHello() {
@@ -8,7 +9,7 @@ export default function CallHello() {
   const handleClick = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/hello')
+      const response = await fetch(getApiUrl('/api/hello'))
       const json = await response.json()
       setData(JSON.stringify(json, null, 2))
     } catch (error) {
