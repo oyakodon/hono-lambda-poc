@@ -24,6 +24,39 @@ describe('API Endpoints', () => {
       const timestamp = new Date(json.timestamp)
       expect(timestamp.toISOString()).toBe(json.timestamp)
     })
+
+    it('should return X-Request-Id header in response', async () => {
+      const res = await app.request('/api/hello')
+      const requestId = res.headers.get('X-Request-Id')
+
+      expect(requestId).toBeTruthy()
+      expect(typeof requestId).toBe('string')
+    })
+
+    it('should use provided X-Request-Id from request header', async () => {
+      const customRequestId = 'test-request-id-12345'
+      const res = await app.request('/api/hello', {
+        headers: {
+          'X-Request-Id': customRequestId
+        }
+      })
+      const responseRequestId = res.headers.get('X-Request-Id')
+
+      expect(responseRequestId).toBe(customRequestId)
+    })
+
+    it('should log X-Amzn-Trace-Id when provided', async () => {
+      const traceId = 'Root=1-5759e988-bd862e3fe1be46a994272793'
+      const res = await app.request('/api/hello', {
+        headers: {
+          'X-Amzn-Trace-Id': traceId
+        }
+      })
+
+      expect(res.status).toBe(200)
+      // Note: The trace ID is logged but not returned in response headers
+      // This test verifies the endpoint accepts the header without errors
+    })
   })
 
   describe('POST /api/post', () => {

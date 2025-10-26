@@ -1,10 +1,14 @@
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import { handle } from 'hono/aws-lambda'
+import { requestId } from 'hono/request-id'
 import { renderToString } from 'react-dom/server'
 import { log } from './lib/logger'
 
 const app = new Hono()
+
+// Request ID middleware - generates or reads X-Request-Id header
+app.use('*', requestId())
 
 // AWS環境ではSTAGE環境変数からベースパスを設定、ローカル開発では設定しない
 const stage = process.env.STAGE
@@ -13,6 +17,8 @@ const stage = process.env.STAGE
 app.use('*', async (c, next) => {
   const start = Date.now()
   const { method, path } = c.req
+  const requestId = c.get('requestId')
+  const traceId = c.req.header('x-amzn-trace-id')
 
   await next()
 
@@ -21,10 +27,16 @@ app.use('*', async (c, next) => {
 
   // 本番環境(AWS)のみ Client IP を含める
   const logData: Record<string, unknown> = {
+    requestId,
     method,
     path,
     status,
     duration
+  }
+
+  // AWS X-Ray Trace IDが存在する場合はログに含める
+  if (traceId) {
+    logData.traceId = traceId
   }
 
   if (import.meta.env.PROD) {
@@ -57,13 +69,21 @@ app.post('/api/post', async (c) => {
     const body = await c.req.json()
 
     // 追加のログ情報（リクエストボディやヘッダー）
-    log.info('POST request body', {
+    const logData: Record<string, unknown> = {
+      requestId: c.get('requestId'),
       body,
       headers: {
         contentType: c.req.header('content-type'),
         userAgent: c.req.header('user-agent')
       }
-    })
+    }
+
+    const traceId = c.req.header('x-amzn-trace-id')
+    if (traceId) {
+      logData.traceId = traceId
+    }
+
+    log.info('POST request body', logData)
 
     return c.json({
       message: 'POST request received',
@@ -71,9 +91,17 @@ app.post('/api/post', async (c) => {
       timestamp: new Date().toISOString()
     })
   } catch (error) {
-    log.error('Failed to parse JSON body', error as Error, {
+    const errorLogData: Record<string, unknown> = {
+      requestId: c.get('requestId'),
       path: c.req.path
-    })
+    }
+
+    const traceId = c.req.header('x-amzn-trace-id')
+    if (traceId) {
+      errorLogData.traceId = traceId
+    }
+
+    log.error('Failed to parse JSON body', error as Error, errorLogData)
 
     return c.json(
       {
