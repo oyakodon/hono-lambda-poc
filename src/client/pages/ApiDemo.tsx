@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { getApiUrl } from '../utils/api'
 import { Button } from '../components/ui/button'
 
 export default function ApiDemo() {
@@ -13,7 +14,7 @@ export default function ApiDemo() {
     setResponse('')
 
     try {
-      const res = await fetch('/api/post', {
+      const res = await fetch(getApiUrl('/api/post'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
