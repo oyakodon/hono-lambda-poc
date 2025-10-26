@@ -24,6 +24,26 @@ describe('API Endpoints', () => {
       const timestamp = new Date(json.timestamp)
       expect(timestamp.toISOString()).toBe(json.timestamp)
     })
+
+    it('should return X-Request-Id header in response', async () => {
+      const res = await app.request('/api/hello')
+      const requestId = res.headers.get('X-Request-Id')
+
+      expect(requestId).toBeTruthy()
+      expect(typeof requestId).toBe('string')
+    })
+
+    it('should use provided X-Request-Id from request header', async () => {
+      const customRequestId = 'test-request-id-12345'
+      const res = await app.request('/api/hello', {
+        headers: {
+          'X-Request-Id': customRequestId
+        }
+      })
+      const responseRequestId = res.headers.get('X-Request-Id')
+
+      expect(responseRequestId).toBe(customRequestId)
+    })
   })
 
   describe('POST /api/post', () => {

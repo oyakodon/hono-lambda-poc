@@ -1,10 +1,14 @@
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import { handle } from 'hono/aws-lambda'
+import { requestId } from 'hono/request-id'
 import { renderToString } from 'react-dom/server'
 import { log } from './lib/logger'
 
 const app = new Hono()
+
+// Request ID middleware - generates or reads X-Request-Id header
+app.use('*', requestId())
 
 // AWS環境ではSTAGE環境変数からベースパスを設定、ローカル開発では設定しない
 const stage = process.env.STAGE
@@ -13,6 +17,7 @@ const stage = process.env.STAGE
 app.use('*', async (c, next) => {
   const start = Date.now()
   const { method, path } = c.req
+  const requestId = c.get('requestId')
 
   await next()
 
@@ -21,6 +26,7 @@ app.use('*', async (c, next) => {
 
   // 本番環境(AWS)のみ Client IP を含める
   const logData: Record<string, unknown> = {
+    requestId,
     method,
     path,
     status,
