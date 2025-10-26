@@ -4,9 +4,11 @@ import { handle } from 'hono/aws-lambda'
 import { renderToString } from 'react-dom/server'
 import { log } from './lib/logger'
 
+const app = new Hono()
+
 // AWS環境ではSTAGE環境変数からベースパスを設定、ローカル開発では設定しない
-const basePath = process.env.STAGE ? `/${process.env.STAGE}` : undefined
-const app = new Hono({ basePath })
+const stage = process.env.STAGE
+const handler = stage ? handle(app.basePath(`/${stage}`)) : handle(app)
 
 // Request logging middleware
 app.use('*', async (c, next) => {
@@ -113,8 +115,8 @@ app.get('*', (c) => {
   return c.html(html)
 })
 
-// Export Lambda handler for production
-export const handler = handle(app)
+// Export Lambda handler for production (with base path if STAGE is set)
+export { handler }
 
 // Export app for development server
 export default app
