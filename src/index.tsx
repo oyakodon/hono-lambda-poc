@@ -88,6 +88,9 @@ app.post('/api/post', async (c) => {
 
 // SSR for all other routes
 app.get('*', (c) => {
+  // AWS環境ではステージ名をパスのプレフィックスに含める
+  const pathPrefix = stage ? `/${stage}` : ''
+
   const html = renderToString(
     <html lang='en'>
       <head>
@@ -95,13 +98,13 @@ app.get('*', (c) => {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <title>Hono + React on AWS Lambda</title>
         {import.meta.env.PROD && (
-          <link rel='stylesheet' href='/static/main.css' />
+          <link rel='stylesheet' href={`${pathPrefix}/static/main.css`} />
         )}
         <script
           type='module'
           src={
             import.meta.env.PROD
-              ? '/static/client.js' // Production: bundled client
+              ? `${pathPrefix}/static/client.js` // Production: bundled client
               : '/src/client/main.tsx' // Development: source file with HMR
           }
         ></script>
