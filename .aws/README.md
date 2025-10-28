@@ -52,11 +52,11 @@
 
 ```bash
 aws cloudformation create-stack \
-  --stack-name hono-lambda-poc-repository \
+  --stack-name hono-spa-lambda-repository \
   --template-body file://cfn-repository.yml \
   --parameters \
     ParameterKey=GitHubOrg,ParameterValue=oyakodon \
-    ParameterKey=RepositoryName,ParameterValue=hono-lambda-poc \
+    ParameterKey=RepositoryName,ParameterValue=hono-spa-lambda \
   --capabilities CAPABILITY_NAMED_IAM
 ```
 
@@ -64,7 +64,7 @@ aws cloudformation create-stack \
 
 ```bash
 aws cloudformation create-stack \
-  --stack-name hono-lambda-poc-service \
+  --stack-name hono-spa-lambda-service \
   --template-body file://cfn-service.yml \
   --parameters \
     ParameterKey=ImageUri,ParameterValue=<ECR_IMAGE_URI> \

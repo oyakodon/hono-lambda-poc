@@ -1,4 +1,4 @@
-# hono-lambda-poc
+# hono-spa-lambda
 
 A minimal SPA application using Hono and React, running on AWS Lambda.
 
@@ -25,5 +25,5 @@ npm run check
 
 ```bash
 # Build for ARM64 architecture
-docker build --platform linux/arm64 -t hono-lambda-poc . --provenance=false
+docker build --platform linux/arm64 -t hono-spa-lambda . --provenance=false
 ```
