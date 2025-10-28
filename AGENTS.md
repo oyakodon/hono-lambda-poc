@@ -163,7 +163,7 @@ npm run check
 npm run storybook
 
 # Docker ビルド (ARM64)
-docker build --platform linux/arm64 -t hono-lambda-poc . --provenance=false
+docker build --platform linux/arm64 -t hono-spa-lambda . --provenance=false
 ```
 
 ## 注意事項
